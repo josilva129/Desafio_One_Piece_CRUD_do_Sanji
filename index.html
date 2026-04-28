@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="main">
+
+    <div class="title">
+      <h1>Desafio One Piece - CRUD do Sanji</h1>
+    </div>
+
+    <div class="campos">
+      Cadastrar Estoque de Comidas:
+      <input type="text" id="input_estoque" />
+
+      <br />
+      Pesquisar comida:
+      <input type="text" id="input_comida" />
+
+      <br />
+      Nome atual da comida:
+      <input type="text" id="input_nome_atual" />
+      <br />
+      Novo nome da comida:
+      <input type="text" id="input_nome_novo" />
+      <br />
+      Nome da comida que quer remover:
+      <input type="text" id="input_deletar" />
+
+      <div class="buttons">
+        <button onclick="cadastrar()">Cadastrar</button>
+
+        <button onclick="verificarQtd()">Verificar Quantidade</button>
+
+        <button onclick="exibirEstoque()">Exibir Estoque</button>
+
+        <button onclick="pesquisar()">Pesquisar</button>
+
+        <button onclick="alterarNome()">Alterar Nome</button>
+
+        <button onclick="removerComida()">Remover Comida</button>
+      </div>
+
+      <button class="limpar" onclick="limparCampos()">Limpar campos</button>
+    </div>
+
+    <div id="div_mensagem"></div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  let comidas = [];
+
+  function limparCampos() {
+
+    input_estoque.value = ''
+    input_comida.value = ''
+    input_nome_atual.value = ''
+    input_nome_novo.value = ''
+    input_deletar.value = ''
+
+    input_estoque.focus()
+
+  }
+
+  function cadastrar() {
+
+    let estoque = input_estoque.value;
+    let mensagem = ''
+
+    if (estoque) {
+      comidas.push(estoque);
+      div_mensagem.style.display = 'none';
+    } else {
+      mensagem = `Preencha o campo 'Estoque de Comidas' e tente novamente!`
+    }
+
+    div_mensagem.innerHTML = mensagem
+
+  }
+
+  function verificarQtd() {
+    div_mensagem.style.display = 'block';
+    let mensagem = "";
+    let tamLista = comidas.length;
+    let pesqComida = input_comida.value
+
+    if (pesqComida) {
+      if (tamLista < 3) {
+        mensagem = `Desse jeito, o Luffy devora até o navio`;
+      } else if (tamLista <= 7) {
+        mensagem = `O comilão do Luffy não vai deixar sobrar nenhuma comida`;
+      } else if (tamLista <= 10) {
+        mensagem = `Assim, talvez sobre um pouco para a tripulação`;
+      } else {
+        mensagem = `Desse jeito vai ter comida para todo mundo e ainda consigo guardar um pouco para a senhorita Nami!`;
+      }
+    } else {
+      mensagem = `Preencha o campo 'Pesquisar comida' e tente novamente!`
+    }
+
+    div_mensagem.innerHTML = mensagem;
+
+  }
+
+  function exibirEstoque() {
+    div_mensagem.style.display = 'block';
+    let comidaExibida = [];
+    let mensagem = "";
+    let estoque = 0;
+    let atual = "";
+    let unidade = "";
+    let pesqComida = input_comida.value
+
+    if (pesqComida) {
+      for (let i = 0; i < comidas.length; i++) {
+        atual = comidas[i];
+
+        if (!comidaExibida.includes(atual)) {
+          for (let c = 0; c < comidas.length; c++) {
+            if (atual == comidas[c]) {
+              estoque++;
+            }
+          }
+
+          if (estoque > 1) {
+            unidade = "unidades";
+          } else {
+            unidade = "unidade";
+          }
+          mensagem += `- ${atual} (${estoque} ${unidade}) <br>`;
+          comidaExibida.push(atual);
+        }
+
+        atual = "";
+        estoque = 0;
+      }
+
+      if (comidas.length == 0) {
+        mensagem = `O estoque esta zerado`
+      }
+
+    } else {
+      mensagem = `Preencha o campo 'Pesquisar comida' e tente novamente!`
+    }
+
+    div_mensagem.innerHTML = mensagem;
+  }
+
+  function pesquisar() {
+    div_mensagem.style.display = 'block';
+    let pesqComida = input_comida.value;
+
+    if (pesqComida) {
+      if (comidas.includes(pesqComida)) {
+        let unidades = 0;
+
+        for (let i = 0; i <= comidas.length; i++) {
+          if (comidas[i] == pesqComida) {
+            unidades++;
+          }
+        }
+        mensagem = `Temos a comida ${pesqComida} e há ${unidades} unidade(s) dela`;
+      } else {
+        mensagem = `Alguém vai ter que comprar ${pesqComida}, tá fazendo falta...`;
+      }
+    } else {
+      mensagem = `Preencha o campo 'Pesquisar comida' e tente novamente!`
+    }
+
+    div_mensagem.innerHTML = mensagem;
+
+  }
+
+  function alterarNome() {
+    let nomeAtual = input_nome_atual.value;
+    let nomeNovo = input_nome_novo.value;
+    let nomeNaLista = "";
+    let mensagem = "";
+
+    if (nomeAtual == '' || nomeNovo == '') {
+      mensagem = `Os campos 'Nome atual da comida' e 'Novo nome da comida' devem estar preenchidos!`
+    } else {
+      if (comidas.includes(nomeAtual)) {
+        for (let i = 0; i < comidas.length; i++) {
+          nomeNaLista = comidas[i];
+
+          if (nomeNaLista == nomeAtual) {
+            comidas[i] = nomeNovo;
+          }
+        }
+
+        mensagem = `A comida '${nomeAtual}' foi alterada para '${nomeNovo}'`;
+      } else {
+        mensagem = `A comida '${nomeAtual}' não foi encontrada no estoque.`;
+      }
+
+    }
+
+    div_mensagem.innerHTML = mensagem;
+  }
+
+  function removerComida() {
+    let nomeComidaDeletar = input_deletar.value;
+    let atual = "";
+    let indiceComida = 0;
+    let mensagem = "";
+
+    if (nomeComidaDeletar) {
+      if (comidas.includes(nomeComidaDeletar)) {
+        for (let i = 0; i < comidas.length; i++) {
+          atual = comidas[i];
+
+          if (atual == nomeComidaDeletar) {
+            indiceComida = atual.indexOf(nomeComidaDeletar);
+            comidas.splice(indiceComida);
+          }
+        }
+
+        mensagem = `A comida '${nomeComidaDeletar}' foi removida do estoque.`;
+      } else {
+        mensagem = `A comida '${nomeComidaDeletar}' não está no estoque.`;
+      }
+    } else {
+      mensagem = `Preencha o campo 'Nome da comida que quer remover' e tente novamente!`
+    }
+
+    div_mensagem.innerHTML = mensagem;
+  }
+</script>
